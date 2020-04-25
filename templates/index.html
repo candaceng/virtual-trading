@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <h1 class="pb-5">Stock Profile for <span class="text-primary">{{ user }}</span></h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Shares</th>
+                <th>Current Price</th>
+                <th>Total Value</th>
+            </tr>
+        </thead>
+        {% for row in data %}
+            <tr>
+                <td>{{ data[row][0] }}</td>
+                <td>{{ data[row][1] }}</td>
+                <td>${{ data[row][2] }}/share</td>
+                <td>{{ data[row][3] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br></br>
+    <p style="text-align: left">
+        Cash Balance: ${{ cash }} <br></br>
+        <b>Grand Total: ${{ total_value }}</b>
+    </p>
+{% endblock %}

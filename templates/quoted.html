@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+    <h1 class="pb-5">Data for {{ symbol }}</h1>
+    <table class="row justify-content-center">
+        {% for row in data %}
+            <tr>
+                <td style="text-align: left">{{ row }}:</td>
+                <td style="text=align: right">{{ data[row] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
