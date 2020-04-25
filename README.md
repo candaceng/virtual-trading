@@ -1,1 +1,1 @@
-# virtual-trading
+A virtual trading app that lets users trade stocks with real time data. Basic functionality (i.e. registering for an account, displaying a user's buy/sell history, getting a stock quote) was implemented and submitted to Harvard's CS50 online course as part of problem set 8. Currently working on additional features. 
