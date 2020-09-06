@@ -4,5 +4,3 @@ Flask-Session
 requests
 gunicorn
 psycopg2
-passlib
-SQLAlchemy
