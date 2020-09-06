@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-#export API_KEY=pk_6637a11bf9034c908f98837a11a2486c 
+#export API_KEY=pk_6637a11bf9034c908f98837a11a2486c
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from flask_session import Session
@@ -34,7 +34,8 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+db = SQL("postgres://sepmqwsnyizqto:7c37113d0bc33aa1ceb10ba364742190f28503024e2df3dcdc85f4eeaacd131d@ec2-34-197-212-240.compute-1.amazonaws.com:5432/d5vlb069732o5i
+")
 
 # Make sure API key is set
 if not os.environ.get("API_KEY"):
@@ -93,13 +94,13 @@ def buy():
         data = lookup(symbol)
         if not data:
             return apology("symbol does not exist")
-        else: 
+        else:
             rows = db.execute("SELECT * FROM users WHERE id = :user", user=user)
             total = data["Price"] * shares
             new_cash = int(rows[0]["cash"]) - total
             if new_cash < 0:
                 return apology("you don't have enough money", 403)
-            db.execute("UPDATE users SET cash = :amount WHERE id = :user", 
+            db.execute("UPDATE users SET cash = :amount WHERE id = :user",
                         amount=new_cash, user=user)
             db.execute("INSERT INTO purchases (symbol, shares, buyer_id, total_spent, time) VALUES (:symbol, :shares, :buyer, :total, :time)",
                         symbol=symbol, shares=shares, buyer=user, total=total, time=datetime.now())
@@ -151,7 +152,7 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
-        
+
 
         # Redirect user to home page
         return redirect("/")
@@ -179,13 +180,13 @@ def quote():
     symbol = request.form.get("symbol")
     if request.method == "POST":
         if not symbol:
-            return apology("must provide stock symbol") 
+            return apology("must provide stock symbol")
         data = lookup(symbol)
         if not data:
             return apology("symbol does not exist")
         else:
             return render_template("quoted.html", symbol=symbol, data=data)
-    else: 
+    else:
         return render_template("quote.html")
 
 
@@ -201,15 +202,15 @@ def register():
             return apology("password must be at least 8 characters")
         elif not request.form.get("confirm"):
             return apology("must confirm your password", 403)
-            
+
         rows = db.execute("SELECT * FROM users WHERE username = :username",
                           username=request.form.get("username"))
         if len(rows) != 0:
             return apology("username taken", 403)
-        
+
         db.execute("INSERT INTO users (username, hash) VALUES (:username, :password)",
                 username=request.form.get("username"), password=generate_password_hash(request.form.get("password")))
-            
+
         return redirect("/")
     else:
         return render_template("register.html")
@@ -244,9 +245,9 @@ def sell():
                     gained = data["Price"] * shares
                     user_data = db.execute("SELECT cash FROM users WHERE users.id = :user", user=user)
                     new_cash = user_data[0]["cash"] + gained
-                    db.execute("UPDATE users SET cash = :amount WHERE id = :user", 
+                    db.execute("UPDATE users SET cash = :amount WHERE id = :user",
                         amount=new_cash, user=user)
-                    db.execute("INSERT INTO sells (symbol, shares, seller_id, total_gained, time) VALUES (:symbol, :shares, :seller_id, :gained, :time)", 
+                    db.execute("INSERT INTO sells (symbol, shares, seller_id, total_gained, time) VALUES (:symbol, :shares, :seller_id, :gained, :time)",
                             symbol=symbol, shares=shares, seller_id=user, gained=gained, time=datetime.now())
                     return redirect("/")
         return apology("you don't have that stock")
