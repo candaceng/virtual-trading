@@ -1,1 +1,1 @@
-web: gunicorn virtual-trading.application:app
+web: gunicorn application:app
